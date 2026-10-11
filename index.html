@@ -1,0 +1,626 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Our First AI Product Was the Company — Coinis × OpenClips × OpenKey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Permanent+Marker&display=swap">
+<style>
+:root{
+  --ink:#04050a; --space:#0a0c16; --raised:#12162a; --line:#262b45;
+  --white:#f2f3f9; --mute:#9aa0b8; --soft:#ccd1e0;
+  --violet:#7c5cff; --lav:#a78bfa; --cyan:#22d3ee; --gold:#f5b942; --goldink:#1a1205;
+  --red:#ef4444; --green:#34d399; --orange:#ff6a40;
+  --f-display:Anton,"Arial Narrow",Impact,sans-serif;
+  --f-body:Inter,system-ui,sans-serif;
+  --f-hand:"Permanent Marker",cursive;
+  --f-mono:"JetBrains Mono",ui-monospace,monospace;
+  --spring:cubic-bezier(.34,1.56,.64,1);
+  --cine:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden}
+body{background:var(--ink);color:var(--white);font-family:var(--f-body);-webkit-font-smoothing:antialiased}
+
+/* ================= ATMOSPHERE ================= */
+#viewport{position:fixed;inset:0;overflow:hidden;background:var(--ink)}
+#stars{position:absolute;inset:0;z-index:0}
+.aurora{position:absolute;border-radius:50%;filter:blur(130px);opacity:.5;z-index:0;pointer-events:none}
+.au1{width:1100px;height:1100px;background:radial-gradient(circle,#2a1a63,transparent 65%);top:-400px;right:-250px;animation:drift1 26s ease-in-out infinite alternate}
+.au2{width:900px;height:900px;background:radial-gradient(circle,#0a3a4a,transparent 65%);bottom:-350px;left:-200px;animation:drift2 32s ease-in-out infinite alternate}
+.au3{width:700px;height:700px;background:radial-gradient(circle,#4a3208,transparent 65%);top:35%;left:40%;opacity:.28;animation:drift3 24s ease-in-out infinite alternate}
+@keyframes drift1{to{transform:translate(-180px,140px) scale(1.15)}}
+@keyframes drift2{to{transform:translate(200px,-120px) scale(1.1)}}
+@keyframes drift3{to{transform:translate(-140px,-100px) scale(1.2)}}
+#grain{position:fixed;inset:0;z-index:40;pointer-events:none;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E")}
+#vignette{position:fixed;inset:0;z-index:39;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(0,0,0,.55) 100%)}
+#glow{position:fixed;width:700px;height:700px;border-radius:50%;pointer-events:none;z-index:1;background:radial-gradient(circle,rgba(124,92,255,.09),transparent 60%);transform:translate(-50%,-50%);transition:opacity .5s}
+
+/* ================= STAGE ================= */
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:50% 50%;z-index:2}
+.slide{position:absolute;inset:0;padding:120px 140px 120px;display:none;flex-direction:column;visibility:hidden}
+.slide.active{display:flex;visibility:visible}
+
+/* kinetic entrance */
+.slide [data-a]{opacity:0;transform:translateY(44px);filter:blur(14px)}
+.slide.active [data-a]{animation:rise 1s var(--cine) forwards;animation-delay:var(--d,0s)}
+@keyframes rise{to{opacity:1;transform:none;filter:blur(0)}}
+
+/* ================= TYPOGRAPHY ================= */
+.kicker{font-family:var(--f-mono);font-weight:700;font-size:20px;letter-spacing:.38em;text-transform:uppercase;color:var(--lav);margin-bottom:30px;display:flex;align-items:center;gap:22px}
+.kicker::before{content:"";width:54px;height:2px;background:linear-gradient(90deg,var(--violet),var(--cyan));flex:none}
+.kicker .n{color:var(--gold);letter-spacing:.12em;margin-left:auto}
+h1{font-family:var(--f-display);font-weight:400;font-size:124px;line-height:.97;letter-spacing:.004em;text-transform:uppercase;margin-bottom:36px}
+h1 .hl{background:linear-gradient(100deg,var(--gold),#ffd97a);color:var(--goldink);padding:2px 26px 0;display:inline-block;transform:rotate(-1.1deg);border-radius:6px}
+h1 .hl.cy{background:linear-gradient(100deg,var(--cyan),#7ee8f7);color:#03262d}
+h1 .hl.vi{background:linear-gradient(100deg,var(--violet),var(--lav));color:#fff}
+h1 .grad{background:linear-gradient(100deg,#fff 20%,var(--lav) 55%,var(--cyan) 90%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-size:31px;line-height:1.5;color:var(--soft);max-width:1240px;font-weight:500}
+.sub b{color:var(--white)}
+.hand{font-family:var(--f-hand);color:var(--lav)}
+.mono{font-family:var(--f-mono)}
+.small{font-size:20px;color:var(--mute);line-height:1.55}
+.gold{color:var(--gold)}.cy-t{color:var(--cyan)}.red-t{color:var(--red)}.gr-t{color:var(--green)}
+.foot{font-family:var(--f-mono);font-size:17px;color:var(--mute);letter-spacing:.08em;margin-top:auto;padding-top:30px}
+
+/* ================= COMPONENTS ================= */
+.btn{display:inline-flex;align-items:center;gap:14px;font-family:var(--f-display);text-transform:uppercase;font-size:32px;letter-spacing:.02em;padding:20px 46px;border-radius:18px;border:none;background:linear-gradient(100deg,var(--gold),#ffd97a);color:var(--goldink);cursor:pointer;box-shadow:0 12px 34px rgba(245,185,66,.28),0 3px 0 #b9871f;transition:transform .18s var(--spring),box-shadow .18s;user-select:none;width:fit-content}
+.btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 18px 44px rgba(245,185,66,.36),0 3px 0 #b9871f}
+.btn:active{transform:translateY(2px);box-shadow:0 4px 12px rgba(245,185,66,.2)}
+.btn.cy{background:linear-gradient(100deg,var(--cyan),#7ee8f7);color:#03262d;box-shadow:0 12px 34px rgba(34,211,238,.25),0 3px 0 #0e7490}
+.btn.vi{background:linear-gradient(100deg,var(--violet),var(--lav));color:#fff;box-shadow:0 12px 34px rgba(124,92,255,.3),0 3px 0 #4c2fd6}
+.card{background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:38px;backdrop-filter:blur(6px)}
+.card h3{font-family:var(--f-display);font-weight:400;font-size:38px;text-transform:uppercase;margin-bottom:12px}
+.card p{font-size:22px;color:var(--soft);line-height:1.5}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;flex:1}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:34px;flex:1;align-content:center}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;flex:1;align-content:center}
+.bignum{font-family:var(--f-display);font-size:110px;line-height:1;background:linear-gradient(180deg,#fff,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sticker{position:absolute;font-family:var(--f-display);text-transform:uppercase;font-size:27px;padding:13px 26px;border-radius:16px;border:3px solid rgba(0,0,0,.55);box-shadow:0 14px 30px rgba(0,0,0,.45);cursor:grab;user-select:none;touch-action:none;letter-spacing:.02em}
+.sticker:hover{transform:scale(1.06) rotate(var(--rot,0deg))}
+.sticker:active{cursor:grabbing}
+.st-gold{background:linear-gradient(100deg,var(--gold),#ffd97a);color:var(--goldink)}
+.st-cy{background:linear-gradient(100deg,var(--cyan),#7ee8f7);color:#03262d}
+.st-vi{background:linear-gradient(100deg,var(--violet),var(--lav));color:#fff}
+.st-wh{background:#fff;color:var(--ink)}
+.bubble{position:absolute;font-family:var(--f-hand);font-size:25px;background:#fff;color:var(--ink);padding:13px 22px;border-radius:18px;border-bottom-left-radius:4px;box-shadow:0 12px 26px rgba(0,0,0,.4);cursor:grab;user-select:none;touch-action:none}
+
+/* ================= HUD ================= */
+#hud{position:fixed;left:0;right:0;bottom:0;height:64px;display:flex;align-items:center;gap:18px;padding:0 26px;background:rgba(4,5,10,.7);backdrop-filter:blur(14px);border-top:1px solid rgba(255,255,255,.07);z-index:50;font-family:var(--f-mono);font-size:14px;color:var(--mute)}
+#hud button{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--white);width:42px;height:42px;border-radius:12px;font-size:19px;cursor:pointer;transition:.15s}
+#hud button:hover{border-color:var(--gold);color:var(--gold)}
+#pos{color:var(--white);font-weight:700;min-width:88px;text-align:center;letter-spacing:.08em}
+#bar{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden}
+#fill{height:100%;width:0;background:linear-gradient(90deg,var(--violet),var(--cyan),var(--gold));transition:width .6s var(--cine)}
+#act{color:var(--lav);letter-spacing:.22em;text-transform:uppercase;font-size:12px;min-width:260px;text-align:right}
+#brandtag{display:flex;gap:14px}#brandtag b{color:var(--soft);font-weight:700}
+#hint{position:fixed;right:26px;bottom:80px;z-index:50;font-family:var(--f-mono);font-size:13px;color:var(--mute);letter-spacing:.14em;opacity:.7}
+
+/* mascot */
+.mascot{position:absolute;top:44px;right:56px;width:104px;height:104px;z-index:5;filter:drop-shadow(0 12px 22px rgba(0,0,0,.4))}
+.mascot svg{width:100%;height:100%}
+</style>
+</head>
+<body>
+<div id="viewport">
+  <canvas id="stars"></canvas>
+  <div class="aurora au1"></div><div class="aurora au2"></div><div class="aurora au3"></div>
+  <div id="glow"></div>
+<div id="stage">
+
+<!-- ============ 01 · COLD OPEN ============ -->
+<section class="slide" data-act="PROLOGUE" style="justify-content:center">
+  <p class="mono" data-a style="--d:.2s;font-size:26px;color:var(--mute);letter-spacing:.2em">PODGORICA, MONTENEGRO · THREE YEARS AGO</p>
+  <h1 data-a style="--d:.9s;font-size:118px;margin-top:44px">One company made a bet:<br><span class="grad">AI would change everything.</span></h1>
+  <p class="sub" data-a style="--d:1.8s">Not buy a tool. Not add a feature. <b>Rebuild the entire company around it.</b></p>
+  <p class="hand" data-a style="--d:2.6s;font-size:32px;margin-top:54px">This is what happened next →</p>
+</section>
+
+<!-- ============ 02 · DEMO ============ -->
+<section class="slide" data-act="PROLOGUE">
+  <div class="kicker" data-a>But first — watch this</div>
+  <h1 data-a style="--d:.15s;font-size:96px">One sentence.<br><span class="hl">One video.</span></h1>
+  <div class="grid2" style="margin-top:14px">
+    <div data-a style="--d:.4s">
+      <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:26px 30px">
+        <div class="mono" style="font-size:16px;color:var(--mute);letter-spacing:.18em;margin-bottom:14px">YOUR IDEA, IN PLAIN WORDS</div>
+        <p style="font-size:28px;line-height:1.5;font-weight:600">“A video for a hotel terrace in Budva at sunset. Warm light. The sea. 15 seconds.”</p>
+      </div>
+      <button class="btn" id="gen-btn" style="margin-top:30px">▶ Generate</button>
+      <div id="gen-status" class="mono" style="margin-top:22px;font-size:19px;color:var(--cyan);min-height:28px"></div>
+      <div style="margin-top:10px;height:6px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden;max-width:560px"><div id="gen-bar" style="height:100%;width:0;background:linear-gradient(90deg,var(--violet),var(--cyan),var(--gold))"></div></div>
+    </div>
+    <div data-a style="--d:.6s;display:flex;justify-content:center">
+      <div id="gen-out" style="width:430px;height:560px;border-radius:30px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(170deg,#141830,#0a0c16);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;transition:all .8s var(--cine)">
+        <span class="mono" style="color:var(--mute);font-size:17px;letter-spacing:.2em" id="gen-ph">YOUR VIDEO LANDS HERE</span>
+        <div id="gen-vid" style="position:absolute;inset:0;background:linear-gradient(160deg,#ff9a56,#f5576c 45%,#4a2f7a);opacity:0;transition:opacity 1s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px">
+          <div style="width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;font-size:44px;color:#0a0c16;padding-left:8px">▶</div>
+          <div class="mono" style="font-size:18px;color:rgba(255,255,255,.9)">hotel-budva-sunset.mp4</div>
+          <div class="mono" style="font-size:16px;color:rgba(255,255,255,.65)">0:15 · 9:16 · ready to post</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot" data-a style="--d:.8s" id="gen-foot">A real workflow, replayed. Cost of that render: 124 credits — less than a coffee on that terrace.</div>
+</section>
+
+<!-- ============ 03 · TITLE ============ -->
+<section class="slide" data-act="WHO WE ARE" style="justify-content:center">
+  <div class="kicker" data-a>Coinis presents</div>
+  <h1 data-a style="--d:.2s;font-size:132px">Our first AI product<br><span class="grad">was the company.</span></h1>
+  <p class="hand" data-a style="--d:.5s;font-size:44px;margin-top:26px;color:var(--gold)">Then we built more.</p>
+  <p class="sub" data-a style="--d:.75s;margin-top:22px">How Coinis went from ad tech to AI-native in seven months —<br>and what came out of it: <b>OpenClips</b> and <b>OpenKey</b>.</p>
+  <div class="sticker st-gold" data-drag data-a style="--d:.8s;--rot:-3deg;top:170px;right:520px;transform:rotate(-3deg)">Est. 2013</div>
+  <div class="sticker st-vi" data-drag data-a style="--d:1s;--rot:2deg;top:330px;right:220px;transform:rotate(2deg)">80+ people</div>
+  <div class="sticker st-cy" data-drag data-a style="--d:1.2s;--rot:-2deg;top:510px;right:470px;transform:rotate(-2deg)">NY · Dubai · Podgorica</div>
+  <div class="bubble" data-drag data-a style="--d:1.4s;top:110px;right:220px">psst — you can drag these</div>
+  <div class="foot" data-a style="--d:1.6s">coinis.com &nbsp;·&nbsp; openclips.ai &nbsp;·&nbsp; openkey.ai</div>
+</section>
+
+<!-- ============ 04 · THE GAP ============ -->
+<section class="slide" data-act="THE PROBLEM">
+  <div class="kicker" data-a>Look around your industry</div>
+  <h1 data-a style="--d:.15s;font-size:96px">Someone near you is shipping<br><span class="hl">ten times more than you.</span></h1>
+  <div class="grid3" style="margin-top:40px;align-content:start;gap:40px">
+    <div class="card" data-a style="--d:.45s;opacity:.7"><div class="mono" style="color:var(--mute);font-size:18px;letter-spacing:.2em;margin-bottom:14px">MORE CONTENT</div><h3>Video, every week</h3><p>Competitors post daily now — ads, tours, offers — while you're still planning the next one.</p></div>
+    <div class="card" data-a style="--d:.7s;opacity:.85"><div class="mono" style="color:var(--mute);font-size:18px;letter-spacing:.2em;margin-bottom:14px">MORE AUTOMATION</div><h3>Tasks that run themselves</h3><p>Replies, reports, listings, translations — done before their morning coffee.</p></div>
+    <div class="card" data-a style="--d:.95s;border-color:rgba(239,68,68,.5);box-shadow:0 0 60px rgba(239,68,68,.1)"><div class="mono" style="color:var(--red);font-size:18px;letter-spacing:.2em;margin-bottom:14px">AT LOWER COST</div><h3 class="red-t">A fraction of yours</h3><p>What took an agency and a month now takes an afternoon — and pocket change.</p></div>
+  </div>
+  <p class="sub" data-a style="--d:1.3s;margin-top:40px">It's not a bigger team. It's not a bigger budget. <b>It's a different system.</b></p>
+</section>
+
+<!-- ============ 05 · THE CHAOS ============ -->
+<section class="slide" data-act="THE PROBLEM">
+  <div class="kicker" data-a>And inside most companies</div>
+  <h1 data-a style="--d:.15s;font-size:100px">Everyone has AI.<br><span class="hl">Nobody has a system.</span></h1>
+  <div class="grid2" style="margin-top:36px;align-items:stretch">
+    <div class="card" data-a style="--d:.5s;border-color:rgba(239,68,68,.45)"><div class="mono" style="color:var(--red);font-size:16px;letter-spacing:.2em;margin-bottom:18px">HOW IT ACTUALLY LOOKS</div><p style="font-size:24px;line-height:1.85">Every employee on their own account.<br>Six subscriptions, six wallets, six habits.<br>Good prompts buried in private chats.<br>Nobody knows what any of it costs.</p></div>
+    <div class="card" data-a style="--d:.7s"><div class="mono" style="color:var(--mute);font-size:16px;letter-spacing:.2em;margin-bottom:18px">WHAT IT COSTS YOU</div><p style="font-size:24px;line-height:1.85">A brand that drifts with every user.<br>Spend you can't see, results you can't repeat.<br>The know-how walks out when the person leaves.<br>AI stays a hobby — never an advantage.</p></div>
+  </div>
+  <div class="foot" data-a style="--d:1s">This was us, back in 2024. It's most companies we know, today.</div>
+</section>
+
+<!-- ============ 06 · THE MIRROR ============ -->
+<section class="slide" data-act="THE MOMENT">
+  <div class="kicker" data-a>Don't answer out loud</div>
+  <h1 data-a style="--d:.15s;font-size:96px">No hands needed.<br><span class="hl">Just notice which one is you.</span></h1>
+  <div class="grid2" style="gap:26px;flex:0;max-width:1400px">
+    <div class="card" data-a style="--d:.4s;padding:30px 36px"><h3 style="font-size:30px">"We use it every day."</h3><p style="margin-top:10px">AI drafts, answers, summarizes. But every person does it their own way.</p></div>
+    <div class="card" data-a style="--d:.55s;padding:30px 36px"><h3 style="font-size:30px">"Someone here plays with it."</h3><p style="margin-top:10px">One enthusiast, zero shared results. When they're on vacation, the AI is too.</p></div>
+    <div class="card" data-a style="--d:.7s;padding:30px 36px"><h3 style="font-size:30px">"We tried it once."</h3><p style="margin-top:10px">A test last year, a free account, a shrug. The subscription still bills someone.</p></div>
+    <div class="card" data-a style="--d:.85s;padding:30px 36px"><h3 style="font-size:30px">"Not for us. Not yet."</h3><p style="margin-top:10px">Fair. But your competitor answered this question a year ago.</p></div>
+  </div>
+  <div class="foot" data-a style="--d:1.05s">Four stages of the same story. The only wrong answer is staying where you are.</div>
+</section>
+<!-- ============ 07 · CONFESSION ============ -->
+<section class="slide" data-act="OUR STORY">
+  <div class="kicker" data-a>We lived exactly this</div>
+  <h1 data-a style="--d:.15s;font-size:100px">We were the company<br><span class="grad">on the wrong side.</span></h1>
+  <div style="position:relative;flex:1;margin-top:56px">
+    <div style="position:absolute;left:0;right:0;top:-24px;height:3px;background:rgba(255,255,255,.1);border-radius:2px"></div>
+    <div id="tl-bar" style="position:absolute;left:0;top:-24px;height:3px;width:0;background:linear-gradient(90deg,var(--violet),var(--cyan),var(--gold));border-radius:2px;transition:width 2.6s var(--cine);box-shadow:0 0 18px rgba(124,92,255,.6)"></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:36px">
+      <div data-a style="--d:.4s"><div class="mono" style="font-size:19px;color:var(--mute);letter-spacing:.14em">2013</div><h3 style="font-family:var(--f-display);font-size:36px;font-weight:400;margin:10px 0">PUBLISHERS</h3><p class="small">Founded in Podgorica. We learn how attention actually works.</p></div>
+      <div data-a style="--d:.65s"><div class="mono" style="font-size:19px;color:var(--mute);letter-spacing:.14em">2015–22</div><h3 style="font-family:var(--f-display);font-size:36px;font-weight:400;margin:10px 0">NETWORK &amp; MEDIA</h3><p class="small">An ad network, then media buying at scale. 10,000+ advertisers.</p></div>
+      <div data-a style="--d:.9s"><div class="mono" style="font-size:19px;color:var(--red);letter-spacing:.14em">2024</div><h3 style="font-family:var(--f-display);font-size:36px;font-weight:400;margin:10px 0;color:var(--red)">THE WAKE-UP</h3><p class="small">Others are shipping 10× more. Our own AI use? Everyone for themselves. So we bet the company.</p></div>
+      <div data-a style="--d:1.15s"><div class="mono" style="font-size:19px;color:var(--gold);letter-spacing:.14em">2026</div><h3 style="font-family:var(--f-display);font-size:36px;font-weight:400;margin:10px 0;color:var(--gold)">STILL GOING</h3><p class="small">Two years in. A transformation like this doesn't end. That's the point.</p></div>
+    </div>
+  </div>
+  <div class="foot" data-a style="--d:1.3s">Not a rebrand. Not a side project. The whole company.</div>
+</section>
+
+<!-- ============ 08 · THE INSIGHT ============ -->
+<section class="slide" data-act="THE TURN">
+  <div class="kicker" data-a>What we learned the hard way</div>
+  <h1 data-a style="--d:.15s;font-size:100px">The fix wasn't more tools.<br><span class="grad">It was one system.</span></h1>
+  <p class="sub" data-a style="--d:.4s">We stopped letting everyone improvise — and put the whole company behind a <b>single gateway</b>.</p>
+  <div class="grid4" style="margin-top:36px">
+    <div class="card" data-a style="--d:.55s"><h3 style="font-size:30px">One key</h3><p>Every AI model — text, image, video — behind a single door, for the whole company.</p></div>
+    <div class="card" data-a style="--d:.7s"><h3 style="font-size:30px">One library</h3><p>Prompts, brand rules and results shared by everyone — not trapped in private chats.</p></div>
+    <div class="card" data-a style="--d:.85s"><h3 style="font-size:30px">One bill</h3><p>Every cent of AI spend visible and accounted for. No shadow subscriptions.</p></div>
+    <div class="card" data-a style="--d:1s"><h3 style="font-size:30px">One standard</h3><p>New people are productive on day one. Quality no longer depends on who had a good day.</p></div>
+  </div>
+  <p class="hand" data-a style="--d:1.2s;font-size:34px;margin-top:38px">Standardize first. Then it compounds.</p>
+</section>
+
+<!-- ============ 07 · THE REBUILD ============ -->
+<section class="slide" data-act="WHO WE ARE">
+  <div class="kicker" data-a>The transformation</div>
+  <h1 data-a style="--d:.15s;font-size:96px">We didn't just buy AI tools.<br><span class="hl">We rebuilt the company.</span></h1>
+  <div class="grid3" style="margin-top:36px">
+    <div class="card" data-a style="--d:.4s"><div class="mono" style="color:var(--gold);font-size:16px;letter-spacing:.2em;margin-bottom:14px">HOW WE CREATE</div><h3>OpenClips, inside</h3><p>Every visual we make — ads, videos, images — is rendered through our own AI composer.</p></div>
+    <div class="card" data-a style="--d:.6s"><div class="mono" style="color:var(--cyan);font-size:16px;letter-spacing:.2em;margin-bottom:14px">HOW WE CONNECT</div><h3>OpenKey, inside</h3><p>Every model, every team, every task — through one gateway we built ourselves. The standardization layer.</p></div>
+    <div class="card" data-a style="--d:.8s"><div class="mono" style="color:var(--lav);font-size:16px;letter-spacing:.2em;margin-bottom:14px">HOW WE WORK</div><h3>The Coinis platform</h3><p>Thirteen years of advertising know-how, encoded into AI that runs the loop: create, launch, learn.</p></div>
+  </div>
+  <p class="hand" data-a style="--d:1.1s;font-size:33px;margin-top:44px">We use what we build. Every day. Including everything you'll see in this talk.</p>
+</section>
+
+<!-- ============ 08 · TWO PRODUCTS ============ -->
+<section class="slide" data-act="WHAT WE BUILD">
+  <div class="kicker" data-a>What came out of it</div>
+  <h1 data-a style="--d:.15s;font-size:104px">Two products.<br><span class="grad">One idea.</span></h1>
+  <div style="display:flex;flex-direction:column;gap:24px;margin-top:40px;max-width:1400px">
+    <div class="card" data-a style="--d:.45s;border-color:rgba(167,139,250,.4);display:flex;align-items:center;gap:40px;padding:32px 42px">
+      <div style="font-family:var(--f-display);font-size:54px;color:var(--lav);min-width:330px">OPENCLIPS</div>
+      <p style="font-size:24px;color:var(--soft)">For <b>everyone</b>. Describe a video. Watch it exist. Every major AI model, one place.</p>
+      <div class="mono gold" style="margin-left:auto;font-size:19px">openclips.ai</div>
+    </div>
+    <div data-a style="--d:.65s;text-align:center;font-family:var(--f-mono);font-size:16px;letter-spacing:.3em;color:var(--mute)">▲&nbsp; RUNS ON &nbsp;▼</div>
+    <div class="card" data-a style="--d:.85s;border-color:rgba(34,211,238,.4);display:flex;align-items:center;gap:40px;padding:32px 42px">
+      <div style="font-family:var(--f-display);font-size:54px;color:var(--cyan);min-width:330px">OPENKEY</div>
+      <p style="font-size:24px;color:var(--soft)">For <b>builders</b> — and for us first. The gateway we standardized on: one key to every AI model on Earth, at cost, plus 3%.</p>
+      <div class="mono gold" style="margin-left:auto;font-size:19px">openkey.ai</div>
+    </div>
+  </div>
+  <div class="foot" data-a style="--d:1.05s">We built the system first. The magic stands on it — and so does everything you'll see next.</div>
+</section>
+
+<!-- ============ 09 · OPENCLIPS ============ -->
+<section class="slide" data-act="OPENCLIPS">
+  <div class="kicker" data-a>OpenClips · for everyone</div>
+  <div class="grid2">
+    <div>
+      <h1 data-a style="--d:.2s;font-size:100px"><span data-countup="77" class="gold">0</span> AI models.<br>You need to know<br><span class="hl">none of them.</span></h1>
+      <p class="sub" data-a style="--d:.45s">Seedance, Veo, Kling, Sora-class flagships… all behind one composer. <b>Describe the shot — we cast the model.</b></p>
+      <button class="btn vi" data-a style="--d:.7s;margin-top:38px" data-models-btn>Cast for me ✨</button>
+    </div>
+    <div class="card" data-a style="--d:.6s;padding:40px">
+      <div class="mono" style="font-size:16px;color:var(--mute);letter-spacing:.2em;margin-bottom:18px">A FEW NAMES FROM THE ROSTER</div>
+      <div id="roster" style="display:flex;flex-wrap:wrap;gap:12px"></div>
+      <p class="small" style="margin-top:24px">New models arrive within days of release. Old versions keep working. Your library never breaks.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 · STARRING YOU ============ -->
+<section class="slide" data-act="OPENCLIPS">
+  <div class="kicker" data-a>OpenClips · for everyone</div>
+  <h1 data-a style="--d:.15s;font-size:100px"><span data-countup="500" data-suffix="+" class="gold">0</span> ready-made ideas.<br><span class="hl vi">Starring you.</span></h1>
+  <p class="sub" data-a style="--d:.4s">Every clip made by the community shows exactly how it was made. Like one? <b>Swap in your face, your product, your logo — press run.</b></p>
+  <div data-a style="--d:.65s;overflow:hidden;margin-top:46px;border-top:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1);padding:26px 0">
+    <div id="ticker" style="display:flex;gap:18px;white-space:nowrap;will-change:transform"></div>
+  </div>
+  <div class="foot" data-a style="--d:.85s">You don't need to be an expert. You need to know what you like.</div>
+</section>
+
+<!-- ============ 11 · FOR YOUR BUSINESS ============ -->
+<section class="slide" data-act="OPENCLIPS">
+  <div class="kicker" data-a>What it means in practice</div>
+  <h1 data-a style="--d:.15s;font-size:96px">Your business.<br><span class="hl">Already filmable.</span></h1>
+  <div class="grid4" style="margin-top:30px">
+    <div class="card" data-a style="--d:.4s"><div style="font-size:52px;margin-bottom:16px">🏨</div><h3 style="font-size:30px">A hotel</h3><p>Your Booking link becomes a video tour. Sunset included.</p></div>
+    <div class="card" data-a style="--d:.55s"><div style="font-size:52px;margin-bottom:16px">🍽️</div><h3 style="font-size:30px">A restaurant</h3><p>A photo of tonight's dish becomes tonight's ad.</p></div>
+    <div class="card" data-a style="--d:.7s"><div style="font-size:52px;margin-bottom:16px">🏠</div><h3 style="font-size:30px">Real estate</h3><p>Three photos of the apartment become a listing film.</p></div>
+    <div class="card" data-a style="--d:.85s"><div style="font-size:52px;margin-bottom:16px">🛍️</div><h3 style="font-size:30px">A shop</h3><p>One product link becomes a whole campaign.</p></div>
+  </div>
+  <p class="sub" data-a style="--d:1.05s;margin-top:36px">Minutes each. <b>For less than the price of the coffee you're drinking right now.</b></p>
+</section>
+<!-- ============ 12 · TALK TO IT ============ -->
+<section class="slide" data-act="OPENCLIPS">
+  <div class="kicker" data-a>OpenClips · Director Agent</div>
+  <h1 data-a style="--d:.15s;font-size:96px">If you can send a message,<br><span class="hl">you can direct a video.</span></h1>
+  <div class="grid2" style="margin-top:10px">
+    <div class="card" data-a style="--d:.45s;padding:34px;font-size:23px;line-height:1.6">
+      <div class="mono" style="font-size:14px;color:var(--mute);letter-spacing:.18em;margin-bottom:20px">● ANY AI CHAT · OPENCLIPS CONNECTED</div>
+      <p style="background:linear-gradient(100deg,var(--violet),#6a48f0);border-radius:18px 18px 18px 4px;padding:16px 22px;max-width:88%;margin-bottom:14px">Make a 15s video for my café. Morning, steam over the cup, warm light.</p>
+      <p style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:18px 18px 4px 18px;padding:16px 22px;max-width:88%;margin-left:auto;margin-bottom:14px">Got it. Three scenes, cinematic cast. You'll see the price before anything renders. Shall I start?</p>
+      <p style="background:linear-gradient(100deg,var(--violet),#6a48f0);border-radius:18px 18px 18px 4px;padding:16px 22px;max-width:88%">Go.</p>
+      <p style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:18px 18px 4px 18px;padding:16px 22px;max-width:88%;margin-left:auto;margin-bottom:0">Done. It's in your library. ☕</p>
+    </div>
+    <div data-a style="--d:.65s">
+      <p class="mono" style="font-size:17px;color:var(--mute);letter-spacing:.24em;margin-bottom:24px">WORKS WHERE YOU ALREADY TALK TO AI</p>
+      <div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:36px">
+        <span class="sticker st-gold" style="position:static;font-size:23px">Claude</span>
+        <span class="sticker st-wh" style="position:static;font-size:23px">ChatGPT</span>
+        <span class="sticker st-wh" style="position:static;font-size:23px">Cursor</span>
+        <span class="sticker st-wh" style="position:static;font-size:23px">VS Code</span>
+        <span class="sticker st-wh" style="position:static;font-size:23px">Grok</span>
+      </div>
+      <p class="sub" style="font-size:27px">No technical setup. You approve the connection once — <b>nothing happens without your OK.</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 13 · PRICE REVEAL ============ -->
+<section class="slide" data-act="OPENCLIPS">
+  <div class="kicker" data-a>The part nobody believes</div>
+  <div class="grid2">
+    <div data-a style="--d:.2s;display:flex;justify-content:center">
+      <div style="width:390px;background:linear-gradient(165deg,#3b2f7a,#7c5cff);border:5px solid #fff;border-radius:32px;padding:30px;transform:rotate(-3deg);box-shadow:0 30px 60px rgba(0,0,0,.5)">
+        <div class="mono" style="font-size:15px;background:rgba(0,0,0,.5);display:inline-block;padding:6px 14px;border-radius:9px">MADE WITH AI · 9:16</div>
+        <div style="height:280px;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-size:42px;text-align:center;line-height:1.25">HOTEL<br>TERRACE<br>🌅</div>
+        <div style="background:#fff;color:var(--ink);font-family:var(--f-hand);font-size:23px;padding:14px 18px;border-radius:14px;margin-bottom:16px">"Book the sunset table."</div>
+        <div style="background:var(--gold);color:var(--goldink);font-family:var(--f-display);font-size:25px;text-align:center;padding:13px;border-radius:12px">BOOK NOW</div>
+      </div>
+    </div>
+    <div>
+      <h1 data-a style="--d:.4s;font-size:88px">What did this<br><span class="hl">video cost?</span></h1>
+      <p class="mono" data-a style="--d:.55s;font-size:17px;color:var(--mute);letter-spacing:.2em;margin-bottom:12px">THE ROOM'S GUESS</p>
+      <input data-a style="--d:.65s" type="range" id="guess" min="0" max="2000" value="800" step="10">
+      <div data-a style="--d:.75s;display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+        <button class="btn" data-reveal-cost>Reveal</button>
+        <div id="guess-val" style="font-family:var(--f-display);font-size:66px;color:var(--gold)">$800</div>
+      </div>
+      <div id="cost-reveal" data-a style="--d:0s;margin-top:24px;opacity:0;transform:translateY(20px);transition:all .8s var(--cine)">
+        <div style="font-family:var(--f-display);font-size:100px;background:linear-gradient(100deg,var(--green),#a7f3d0);-webkit-background-clip:text;background-clip:text;color:transparent">$0.77</div>
+        <p class="sub" style="font-size:24px;margin-top:6px">124 credits on OpenClips. <b>Less than the espresso on that terrace.</b></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 14 · OPENKEY ============ -->
+<section class="slide" data-act="OPENKEY">
+  <div class="kicker" data-a style="color:var(--cyan)">OpenKey · for builders</div>
+  <h1 data-a style="--d:.15s;font-size:110px">One key.<br><span class="hl cy">Every AI model on Earth.</span></h1>
+  <p class="sub" data-a style="--d:.4s">338 models from 52 labs, behind one door. OpenClips walks through it every second — <b>and the same door is open to anyone.</b></p>
+  <button class="btn cy" data-a style="--d:.6s;margin-top:36px" data-key-btn>Click the key 🔑</button>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin-top:44px;max-width:1500px">
+    <div class="card" data-a style="--d:.75s;text-align:center;border-color:rgba(34,211,238,.3)"><div class="bignum" style="background:linear-gradient(180deg,#fff,var(--cyan));-webkit-background-clip:text;background-clip:text" data-key-count="338">0</div><p style="margin-top:8px">AI models</p></div>
+    <div class="card" data-a style="--d:.85s;text-align:center;border-color:rgba(34,211,238,.3)"><div class="bignum" style="background:linear-gradient(180deg,#fff,var(--cyan));-webkit-background-clip:text;background-clip:text" data-key-count="52">0</div><p style="margin-top:8px">AI labs</p></div>
+    <div class="card" data-a style="--d:.95s;text-align:center;border-color:rgba(34,211,238,.3)"><div class="bignum" style="background:linear-gradient(180deg,#fff,var(--cyan));-webkit-background-clip:text;background-clip:text" data-key-count="25">0</div><p style="margin-top:8px">free models</p></div>
+    <div class="card" data-a style="--d:1.05s;text-align:center;border-color:rgba(34,211,238,.3)"><div class="bignum" style="background:linear-gradient(180deg,#fff,var(--cyan));-webkit-background-clip:text;background-clip:text" data-key-count="3" data-suffix="%">0</div><p style="margin-top:8px">flat fee. On everything.</p></div>
+  </div>
+</section>
+
+<!-- ============ 15 · HONESTY ============ -->
+<section class="slide" data-act="OPENKEY">
+  <div class="kicker" data-a style="color:var(--cyan)">OpenKey · how we charge</div>
+  <h1 data-a style="--d:.15s;font-size:100px">It's arithmetic,<br>not a <span class="hl cy">pricing page.</span></h1>
+  <div class="grid2" style="margin-top:10px">
+    <div>
+      <p class="sub" data-a style="--d:.4s;font-size:28px">Every model costs its maker's price <b>plus 3%</b>. That 3% is our entire margin. No tiers, no hidden spread, no expiring credits — the math is printed next to every price, and inside every API response.</p>
+      <p class="sub" data-a style="--d:.6s;font-size:28px;margin-top:26px">Public status page. Rankings nobody can buy. <b>"If a number on our site is wrong, we want to know within the hour."</b></p>
+      <p class="hand" data-a style="--d:.8s;font-size:32px;margin-top:30px">Routing is a commodity. Trust is the product.</p>
+    </div>
+    <div class="card mono" data-a style="--d:.55s;padding:42px;font-size:24px;border-color:rgba(34,211,238,.3)">
+      <div style="color:var(--mute);font-size:16px;letter-spacing:.14em;margin-bottom:22px">WORKED EXAMPLE · CLAUDE SONNET 4.5 · PER 1M TOKENS</div>
+      <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px dashed var(--line)"><span>Provider price</span><span>$3.00</span></div>
+      <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px dashed var(--line)"><span>OpenKey fee (3%)</span><span class="cy-t">$0.09</span></div>
+      <div style="display:flex;justify-content:space-between;padding:16px 0;font-size:36px;font-weight:700"><span>You pay</span><span class="gold">$3.09</span></div>
+      <div style="color:var(--mute);font-size:16px;margin-top:16px">Check our arithmetic on any of the 338 models. We dare you.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 16 · CHURN ============ -->
+<section class="slide" data-act="WHY IT MATTERS">
+  <div class="kicker" data-a>Why the architecture matters</div>
+  <h1 data-a style="--d:.15s;font-size:100px">AI models come and go.<br><span class="grad">Your work shouldn't.</span></h1>
+  <p class="sub" data-a style="--d:.4s">OpenAI switched Sora off. Overnight, thousands of workflows built on it simply died.</p>
+  <div class="grid2" style="margin-top:36px;align-items:stretch">
+    <div class="card" data-a style="--d:.6s;border-color:rgba(239,68,68,.45)"><h3 class="red-t">The old way</h3><p style="font-size:24px;line-height:1.75">Five subscriptions. Five wallets.<br>Prompts tuned for a dead model.<br>Start over. Every few months. Again.</p></div>
+    <div class="card" data-a style="--d:.8s;border-color:rgba(52,211,153,.45);box-shadow:0 0 60px rgba(52,211,153,.08)"><h3 class="gr-t">On our stack</h3><p style="font-size:24px;line-height:1.75">Swap the model — one dropdown.<br>Your prompts, library and credits stay.<br>You keep working. You never notice.</p></div>
+  </div>
+  <div class="foot" data-a style="--d:1s">Models are cast, not married. The roster improves underneath your craft instead of replacing it.</div>
+</section>
+
+<!-- ============ 17 · WHY MONTENEGRO ============ -->
+<section class="slide" data-act="WHY IT MATTERS">
+  <div class="kicker" data-a>Why it matters here</div>
+  <h1 data-a style="--d:.15s;font-size:96px">World-class AI.<br><span class="hl">Built next door.</span></h1>
+  <div class="grid3" style="margin-top:36px">
+    <div class="card" data-a style="--d:.4s"><h3 style="font-size:32px">The same tools as Silicon Valley</h3><p>The exact models the world's best teams use — Seedance, Veo, Claude-class flagships — reachable from Podgorica at the same price as from Palo Alto.</p></div>
+    <div class="card" data-a style="--d:.6s"><h3 style="font-size:32px">Priced with nothing to hide</h3><p>Provider cost + 3%. Printed math. Free tier that needs no card. If it ever feels wrong, the status page and the receipts are public.</p></div>
+    <div class="card" data-a style="--d:.8s"><h3 style="font-size:32px">A team you can actually call</h3><p>80+ people, headquartered here. When Montenegrin business adopts AI, it shouldn't have to phone a foreign call center.</p></div>
+  </div>
+  <p class="hand" data-a style="--d:1.05s;font-size:34px;margin-top:40px">The future isn't imported. It can be built here. We're proof.</p>
+</section>
+<!-- ============ 18 · FILM AWARD ============ -->
+<section class="slide" data-act="THE INVITATION" style="justify-content:center">
+  <div class="sticker st-gold" data-drag data-a style="--d:.9s;top:120px;left:140px;--rot:-2deg;transform:rotate(-2deg);font-size:23px">AI Film Award 2027 · Dubai · 8–10 January</div>
+  <div data-a style="--d:.2s;font-family:var(--f-display);font-size:200px;line-height:1;background:linear-gradient(180deg,#fff,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent">$1,000,000</div>
+  <p class="sub" data-a style="--d:.45s;font-size:33px;max-width:1200px">for one idea turned into an AI film. Five films premiere at the <b>1 Billion Followers Summit</b> in Dubai.</p>
+  <p class="hand" data-a style="--d:.7s;font-size:36px;margin-top:26px">Someone in this room could win it. Seriously.</p>
+  <div data-a style="--d:.9s;display:flex;gap:22px;margin-top:46px;align-items:flex-end">
+    <div class="cdb"><div class="cdn" data-cd="d">00</div><div class="cdl">days</div></div>
+    <div class="cdb"><div class="cdn" data-cd="h">00</div><div class="cdl">hours</div></div>
+    <div class="cdb"><div class="cdn" data-cd="m">00</div><div class="cdl">min</div></div>
+    <div class="cdb"><div class="cdn" data-cd="s">00</div><div class="cdl">sec</div></div>
+    <div style="margin-left:26px"><div class="hand" style="font-size:27px;color:var(--gold)">until entries close</div><div class="mono" style="color:var(--soft);font-size:18px">20 November 2026 · openclips.ai</div></div>
+  </div>
+  <style>
+    .cdb{background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:18px 28px;text-align:center;backdrop-filter:blur(8px)}
+    .cdn{font-family:var(--f-display);font-size:72px;color:var(--gold);line-height:1}
+    .cdl{font-family:var(--f-mono);font-size:14px;color:var(--mute);text-transform:uppercase;letter-spacing:.25em;margin-top:8px}
+  </style>
+</section>
+
+<!-- ============ 19 · FOR YOU ============ -->
+<section class="slide" data-act="THE INVITATION">
+  <div class="kicker" data-a>What this means for you</div>
+  <h1 data-a style="--d:.15s;font-size:104px">Try it tonight.<br><span class="grad">On us.</span></h1>
+  <div class="grid3" style="margin-top:40px">
+    <div class="card" data-a style="--d:.4s;text-align:center"><div style="font-size:54px;margin-bottom:16px">🎁</div><h3 style="font-size:32px">Free to start</h3><p>50 credits at sign-up. No card. No catch. Make your first video before you sleep.</p></div>
+    <div class="card" data-a style="--d:.6s;text-align:center"><div style="font-size:54px;margin-bottom:16px">🗣️</div><h3 style="font-size:32px">No expertise</h3><p>Plain words in, finished video out. If a tool needs a specialist, the tool failed — not you.</p></div>
+    <div class="card" data-a style="--d:.8s;text-align:center"><div style="font-size:54px;margin-bottom:16px">🔑</div><h3 style="font-size:32px">You own it</h3><p>Your videos, your prompts, your library. Commercially yours on any paid plan. Exportable the day you leave.</p></div>
+  </div>
+  <div class="foot" data-a style="--d:1s">openclips.ai — the studio · openkey.ai — the key · both free to walk into</div>
+</section>
+
+<!-- ============ 20 · CLOSE ============ -->
+<section class="slide" data-act="HVALA" style="justify-content:center;text-align:center">
+  <div class="kicker" data-a style="justify-content:center">The end</div>
+  <h1 data-a style="--d:.25s;font-size:150px">The AI company<br><span class="grad">next door.</span></h1>
+  <div style="display:flex;gap:26px;justify-content:center;margin-top:50px">
+    <div class="card" data-a style="--d:.6s;border-color:rgba(167,139,250,.4);text-align:left;min-width:420px"><h3 style="color:var(--lav)">OpenClips</h3><p>Describe it. Watch it exist.</p><div class="mono gold" style="margin-top:14px;font-size:20px">openclips.ai</div></div>
+    <div class="card" data-a style="--d:.8s;border-color:rgba(34,211,238,.4);text-align:left;min-width:420px"><h3 class="cy-t">OpenKey</h3><p>One key. Every model. +3%.</p><div class="mono gold" style="margin-top:14px;font-size:20px">openkey.ai</div></div>
+    <div class="card" data-a style="--d:1s;border-color:rgba(245,185,66,.4);text-align:left;min-width:420px"><h3 class="gold">Coinis</h3><p>The company behind both.</p><div class="mono gold" style="margin-top:14px;font-size:20px">coinis.com</div></div>
+  </div>
+  <p class="hand" data-a style="--d:1.3s;font-size:52px;margin-top:64px;color:var(--gold)">Hvala vam. 🇲🇪</p>
+  <div class="foot" data-a style="--d:1.5s;text-align:center">Questions welcome · stickers optional · we can compete with the world</div>
+</section>
+</div></div>
+
+
+<div id="hud">
+  <button id="prev" aria-label="Previous">‹</button>
+  <div id="pos">01 / 20</div>
+  <button id="next" aria-label="Next">›</button>
+  <div id="bar"><div id="fill"></div></div>
+  <div id="brandtag"><b>coinis</b>·<b>openclips</b>·<b>openkey</b></div>
+  <div id="act">PROLOGUE</div>
+</div>
+<div id="hint">→ NEXT</div>
+<div id="grain"></div><div id="vignette"></div>
+
+<script>
+(() => {
+  const slides=[...document.querySelectorAll('.slide')];
+  const N=slides.length; let cur=0;
+
+  /* stage scaling */
+  const stage=document.getElementById('stage');
+  const fit=()=>{const s=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform=`translate(-50%,-50%) scale(${s})`};
+  addEventListener('resize',fit);fit();
+
+  /* starfield + parallax */
+  const cv=document.getElementById('stars'),cx=cv.getContext('2d');
+  let W,H,stars=[],mx=0,my=0;
+  const initStars=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight;
+    stars=Array.from({length:170},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.6+.3,z:Math.random()*.8+.2,tw:Math.random()*6.28}))};
+  initStars();addEventListener('resize',initStars);
+  addEventListener('mousemove',e=>{mx=(e.clientX/innerWidth-.5);my=(e.clientY/innerHeight-.5);
+    const g=document.getElementById('glow');g.style.left=e.clientX+'px';g.style.top=e.clientY+'px'});
+  (function draw(t){cx.clearRect(0,0,W,H);
+    stars.forEach(s=>{const a=.25+.55*Math.abs(Math.sin(t/1400+s.tw));
+      cx.globalAlpha=a*s.z;cx.fillStyle='#cdd3ee';
+      cx.beginPath();cx.arc(s.x+mx*40*s.z,s.y+my*40*s.z,s.r,0,6.28);cx.fill();
+      s.y+=.03*s.z;if(s.y>H)s.y=0});
+    cx.globalAlpha=1;requestAnimationFrame(draw)})(0);
+
+  /* nav */
+  const fill=document.getElementById('fill'),pos=document.getElementById('pos'),act=document.getElementById('act');
+  const mascot=document.getElementById('mascot'),hint=document.getElementById('hint');
+  function go(i,push=true){
+    i=Math.max(0,Math.min(N-1,i));
+    slides.forEach((s,k)=>{
+      if(k===i){s.classList.remove('active');void s.offsetWidth;s.classList.add('active')}
+      else s.classList.remove('active');
+    });
+    cur=i;
+    pos.textContent=String(i+1).padStart(2,'0')+' / '+N;
+    fill.style.width=((i+1)/N*100)+'%';
+    act.textContent=slides[i].dataset.act||'';
+    hint.style.opacity=i===N-1?0:.7;
+    if(mascot)mascot.style.display='none';
+    if(push)history.replaceState(null,'','#s'+(i+1));
+    onEnter(i);
+  }
+  const next=()=>go(cur+1),prev=()=>go(cur-1);
+  document.getElementById('next').onclick=next;
+  document.getElementById('prev').onclick=prev;
+  addEventListener('keydown',e=>{
+    if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();next()}
+    if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev()}
+    if(e.key==='Home')go(0);if(e.key==='End')go(N-1);
+  });
+  document.getElementById('viewport').addEventListener('click',e=>{
+    if(e.target.closest('button,input,a,.sticker,.bubble,.flip,.poll,#gen-btn,#hud,#hint'))return;
+    const x=e.clientX/innerWidth;
+    if(x>0.86)next();else if(x<0.06)prev();
+  });
+  const m=location.hash.match(/s(\d+)/);
+  const start=m?Math.min(N,Math.max(1,parseInt(m[1])))-1:0;
+
+  /* draggable stickers */
+  document.querySelectorAll('[data-drag]').forEach(el=>{
+    el.addEventListener('pointerdown',e=>{
+      e.preventDefault();e.stopPropagation();el.setPointerCapture(e.pointerId);
+      el.style.animation='none';el.style.opacity=1;el.style.filter='none';
+      const r=el.getBoundingClientRect(),sx=e.clientX-r.left,sy=e.clientY-r.top;
+      const move=ev=>{const pr=stage.getBoundingClientRect(),sc=pr.width/1920;
+        el.style.left=((ev.clientX-pr.left)/sc-sx/sc)+'px';
+        el.style.top=((ev.clientY-pr.top)/sc-sy/sc)+'px';
+        el.style.right='auto';el.style.bottom='auto'};
+      const up=()=>{el.removeEventListener('pointermove',move);el.removeEventListener('pointerup',up)};
+      el.addEventListener('pointermove',move);el.addEventListener('pointerup',up);
+    });
+  });
+
+  /* count-up */
+  function countUp(el){
+    const target=+el.dataset.countup,suf=el.dataset.suffix||'';
+    const t0=performance.now(),dur=1500;
+    (function tick(t){const p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3);
+      el.textContent=Math.round(target*e)+suf;
+      if(p<1)requestAnimationFrame(tick)})(t0);
+  }
+
+  /* roster (slide 9) */
+  const models=['Seedance 2.5','Veo 3.1','Kling 3.0','Grok Imagine 1.5','Hailuo 2.3','MiniMax H3','Wan 3.0','FLUX 3','Runway Gen-4.5','Nano Banana 2','GPT Image 2','Ideogram 4.0','Recraft V4.1','Seedream 5.0 Pro','Qwen-Image 3.0','Z-Image Turbo'];
+  const roster=document.getElementById('roster');
+  roster.innerHTML=models.map(m=>`<span class="chip" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:9px 17px;font-family:var(--f-mono);font-size:16px">${m}</span>`).join('');
+  document.querySelector('[data-models-btn]').onclick=()=>{
+    roster.querySelectorAll('.chip').forEach((c,i)=>{
+      setTimeout(()=>{c.style.transition='all .4s var(--spring)';c.style.borderColor='var(--gold)';c.style.transform='scale(1.08)';
+        setTimeout(()=>{c.style.borderColor='rgba(255,255,255,.14)';c.style.transform=''},650)},i*45);
+    });
+  };
+
+  /* ticker (slide 10) */
+  const cats=['Viral Dances','Product Ads','Hotel Tours','Fashion & Beauty','Furry Friends','UGC & Reviews','Travel Worlds','Real Estate Films','ASMR','Fan Cams','Mini Worlds','Photo to Life','Memes','Story to Video','Restaurants','Birthdays'];
+  const ticker=document.getElementById('ticker');
+  ticker.innerHTML=(cats.concat(cats)).map(c=>`<span style="font-family:var(--f-display);font-size:28px;text-transform:uppercase;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:11px 24px">${c}</span>`).join('');
+  let tx=0;(function tickT(){tx-=0.7;const half=ticker.scrollWidth/2;if(-tx>half)tx=0;ticker.style.transform=`translateX(${tx}px)`;requestAnimationFrame(tickT)})();
+
+  /* demo (slide 2) */
+  const genBtn=document.getElementById('gen-btn'),genBar=document.getElementById('gen-bar'),genStatus=document.getElementById('gen-status'),genVid=document.getElementById('gen-vid'),genPh=document.getElementById('gen-ph');
+  const steps=['Casting the model… Seedance 2.5','Writing the three scenes…','Composing the shots…','Rendering frames…','Sound & color pass…'];
+  let busy=false;
+  genBtn.onclick=()=>{
+    if(busy)return;busy=true;
+    genVid.style.opacity=0;genPh.style.opacity=1;genBar.style.width='0';genBar.style.transition='none';
+    let i=0;genStatus.textContent=steps[0];
+    const iv=setInterval(()=>{i++;if(i<steps.length){genStatus.textContent=steps[i]}},1500);
+    requestAnimationFrame(()=>{genBar.style.transition='width 7.5s cubic-bezier(.22,1,.36,1)';genBar.style.width='100%'});
+    setTimeout(()=>{
+      clearInterval(iv);genStatus.textContent='Done.';
+      genPh.style.opacity=0;genVid.style.opacity=1;busy=false;
+      genBtn.innerHTML='↺ Run it again';
+    },7900);
+  };
+
+  /* guess + cost reveal (slide 13) */
+  const guess=document.getElementById('guess'),gv=document.getElementById('guess-val');
+  guess.style.width='100%';guess.style.accentColor='var(--gold)';guess.style.height='30px';
+  guess.oninput=()=>gv.textContent='$'+(+guess.value).toLocaleString();
+  document.querySelector('[data-reveal-cost]').onclick=()=>{
+    const r=document.getElementById('cost-reveal');r.style.opacity=1;r.style.transform='none';
+  };
+
+  /* openkey counters (slide 14) */
+  document.querySelector('[data-key-btn]').onclick=()=>{
+    document.querySelectorAll('[data-key-count]').forEach(el=>{
+      const target=+el.dataset.keyCount,suf=el.dataset.suffix||'';
+      const t0=performance.now(),dur=1700;
+      (function tick(t){const p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3);
+        el.textContent=Math.round(target*e)+suf;
+        if(p<1)requestAnimationFrame(tick)})(t0);
+    });
+  };
+
+  /* poll (slide 5) */
+  document.querySelectorAll('.poll').forEach(c=>c.addEventListener('click',e=>{
+    const n=c.querySelector('[data-count]');
+    n.textContent=Math.max(0,+n.textContent+(e.shiftKey?-1:1));
+    n.style.transform='scale(1.15)';setTimeout(()=>n.style.transform='',160);
+  }));
+
+  /* countdown (slide 18) */
+  const deadline=new Date('2026-11-20T23:59:59Z').getTime();
+  const pad=n=>String(n).padStart(2,'0');
+  setInterval(()=>{let d=Math.max(0,deadline-Date.now());
+    const set=(k,v)=>{const el=document.querySelector(`[data-cd="${k}"]`);if(el)el.textContent=pad(v)};
+    set('d',Math.floor(d/864e5));set('h',Math.floor(d/36e5)%24);set('m',Math.floor(d/6e4)%60);set('s',Math.floor(d/1e3)%60);
+  },1000);
+
+  /* on-enter hooks */
+  function onEnter(i){
+    slides[i].querySelectorAll('[data-countup]').forEach(el=>{if(!el.dataset.done){el.dataset.done=1;setTimeout(()=>countUp(el),500)}});
+    if(i===5)setTimeout(()=>document.getElementById('tl-bar').style.width='100%',400);
+  }
+
+  go(start,false);
+})();
+</script>
+</body></html>
